@@ -31,10 +31,7 @@ public sealed partial class App : Application
     public S? FetchProviderService<S>() => _host.Services.GetService<S>();
     public App()
     {
-        #if DEBUG
-            AllocConsole();
-            Console.WriteLine("Debug mode: Console attached.");
-        #endif
+        
 
         Config.AppUtils.LoadAppData();
 

@@ -18,7 +18,7 @@ namespace Kaede.ViewModels
     public class UserLoginViewModel : ViewModelBase
     {
         #region Services and Dependencies
-        private readonly IUserService _userSerivce;
+        private readonly IUserService _userService;
         private readonly UserSession _userSession;
         #endregion
 
@@ -51,6 +51,13 @@ namespace Kaede.ViewModels
                 LoginCommand.NotifyCanExecuteChanged();
             }
         }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
+        }
         #endregion
 
         #region Constructor
@@ -59,7 +66,7 @@ namespace Kaede.ViewModels
             IUserService userService,
             UserSession userSession)
         {
-            _userSerivce = userService;
+            _userService = userService;
             _userSession = userSession;
             NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
             LoginCommand = new AsyncRelayCommand(LoginUser, CanLoginUser);
@@ -69,10 +76,10 @@ namespace Kaede.ViewModels
         #region LoginCommand Methods
         private async Task LoginUser()
         {
-            UserDTO? userDTO = await _userSerivce.GetUser(Username);
+            UserDTO? userDTO = await _userService.GetUser(Username);
 
 
-            if (userDTO != null && await _userSerivce.ValidatePassword(Username, Password))
+            if (userDTO != null && await _userService.ValidatePassword(Username, Password))
             {
                 _userSession.Assign(userDTO);
                 NavigateHomeCommand.Execute(null);
